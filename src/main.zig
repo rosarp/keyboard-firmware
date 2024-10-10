@@ -1,14 +1,8 @@
 const std = @import("std");
-const json = std.json;
-const KeyboardConfig = @import("config.zig").KeyboardConfig;
 
 // comptime load left or right gpio pins
 
-pub fn main() !void {
-    const parsed = try KeyboardConfig.init();
-    const config = parsed.value;
-    std.debug.print("config.root: {s}\n", .{config});
-}
+pub fn main() !void {}
 
 pub fn main_bak() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)

@@ -1,8 +1,12 @@
 const std = @import("std");
+const json = std.json;
 const microzig = @import("microzig/build");
 const rp2040 = @import("microzig/bsp/raspberrypi/rp2040");
 
-pub fn build(b: *std.Build) void {
+const KeyboardConfig = @import("src/config.zig").KeyboardConfig;
+const generatePins = @import("src/gpio.zig").generatePins;
+
+pub fn build(b: *std.Build) !void {
     const mz = microzig.init(b, .{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -17,6 +21,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .root_source_file = b.path("./src/main.zig"),
     });
+
+    const config = try loadConfig();
+    const options = b.addOptions();
+    options.addOption(KeyboardConfig, "keyboard_config", config);
+
+    // firmware.addImport("config", options.createModule());
 
     // `install_firmware()` is the MicroZig pendant to `Build.installArtifact()`
     // and allows installing the firmware as a typical firmware file.
@@ -51,4 +61,16 @@ pub fn build(b: *std.Build) void {
     // const test_step = b.step("test", "Run unit tests");
     // test_step.dependOn(&run_lib_unit_tests.step);
     // test_step.dependOn(&run_exe_unit_tests.step);
+}
+
+fn loadConfig() !KeyboardConfig {
+    const parsed = try KeyboardConfig.init();
+    // defer parsed.deinit();
+    const config = parsed.value;
+    std.log.info("config.root: {s}\n", .{config.layers});
+
+    const gpio_pins = generatePins(40);
+    std.log.info("config.root: {s}\n", .{gpio_pins});
+
+    return config;
 }
