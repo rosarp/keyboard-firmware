@@ -2,12 +2,10 @@
     .name = "keyboard_firmware",
     .version = "0.0.1",
     .minimum_zig_version = "0.13.0",
+    .maximum_zig_version = "0.13.0",
     .dependencies = .{
-        .@"microzig/build" = .{
-            .path = "lib/microzig/build",
-        },
-        .@"microzig/bsp/raspberrypi/rp2040" = .{
-            .path = "lib/microzig/bsp/raspberrypi/rp2040",
+        .microzig = .{
+            .path = "lib/microzig",
         },
     },
 

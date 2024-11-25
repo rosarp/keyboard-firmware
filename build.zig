@@ -1,41 +1,48 @@
 const std = @import("std");
+const info = std.log.info;
 const json = std.json;
-const microzig = @import("microzig/build");
-const rp2040 = @import("microzig/bsp/raspberrypi/rp2040");
+const microzig = @import("microzig");
 
 const KeyboardConfig = @import("src/config.zig").KeyboardConfig;
 const generatePins = @import("src/gpio.zig").generatePins;
+const MicroBuild = microzig.MicroBuild(.{
+    .rp2xxx = true,
+});
 
 pub fn build(b: *std.Build) !void {
-    const mz = microzig.init(b, .{});
     const optimize = b.standardOptimizeOption(.{});
+
+    const config = try loadConfig();
+    const mz_dep = b.dependency("microzig", .{});
+
+    const mb = MicroBuild.init(b, mz_dep) orelse return;
 
     // `add_firmware` basically works like addExecutable, but takes a
     // `microzig.Target` for target instead of a `std.zig.CrossTarget`.
     //
     // The target will convey all necessary information on the chip,
     // cpu and potentially the board as well.
-    const firmware = mz.add_firmware(b, .{
+    const firmware = mb.add_firmware(.{
         .name = "keyboard_firmware",
-        .target = rp2040.boards.raspberrypi.pico,
+        .target = mb.ports.rp2xxx.boards.raspberrypi.pico,
         .optimize = optimize,
         .root_source_file = b.path("./src/main.zig"),
     });
 
-    const config = try loadConfig();
+    // Add the config as a build option
     const options = b.addOptions();
     options.addOption(KeyboardConfig, "keyboard_config", config);
+    firmware.add_options("build_options", options);
 
     // firmware.addImport("config", options.createModule());
-
     // `install_firmware()` is the MicroZig pendant to `Build.installArtifact()`
     // and allows installing the firmware as a typical firmware file.
     //
     // This will also install into `$prefix/firmware` instead of `$prefix/bin`.
-    mz.install_firmware(b, firmware, .{});
+    mb.install_firmware(firmware, .{});
 
     // For debugging, we also always install the firmware as an ELF file
-    mz.install_firmware(b, firmware, .{ .format = .elf });
+    mb.install_firmware(firmware, .{ .format = .elf });
 
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
@@ -67,10 +74,8 @@ fn loadConfig() !KeyboardConfig {
     const parsed = try KeyboardConfig.init();
     // defer parsed.deinit();
     const config = parsed.value;
-    std.log.info("config.root: {s}\n", .{config.layers});
-
+    info("config.root: {s}\n", .{config.layers});
     const gpio_pins = generatePins(40);
-    std.log.info("config.root: {s}\n", .{gpio_pins});
-
+    info("config.root: {s}\n", .{gpio_pins});
     return config;
 }

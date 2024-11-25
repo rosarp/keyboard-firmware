@@ -19,16 +19,10 @@ pub const KeyboardConfig = struct {
     const Self = @This();
 
     pub fn init() !json.Parsed(Self) {
-        const allocator = std.heap.page_allocator;
-
-        const file = try std.fs.cwd().openFile("keyboard.json", .{ .mode = .read_only });
-        defer file.close();
-        const file_size = try file.getEndPos();
-
-        const config_file = try std.fs.cwd().readFileAlloc(allocator, "keyboard.json", file_size);
-        defer allocator.free(config_file);
-
-        // const config_file: []const u8 = @embedFile("keyboard.json");
+        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+        defer _ = gpa.deinit();
+        const allocator = gpa.allocator();
+        const config_file: []const u8 = @embedFile("keyboard.json");
         const parsed = try json.parseFromSlice(KeyboardConfig, allocator, config_file, .{});
         defer parsed.deinit();
         return parsed;
