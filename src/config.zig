@@ -18,26 +18,21 @@ pub const KeyboardConfig = struct {
 
     const Self = @This();
 
-    pub fn init() !json.Parsed(Self) {
-        var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-        defer _ = gpa.deinit();
-        const allocator = gpa.allocator();
+    pub fn init(allocator: std.mem.Allocator) !json.Parsed(Self) {
         const config_file: []const u8 = @embedFile("keyboard.json");
-        const parsed = try json.parseFromSlice(KeyboardConfig, allocator, config_file, .{});
-        defer parsed.deinit();
-        return parsed;
+        return try json.parseFromSlice(Self, allocator, config_file, .{});
     }
 };
 
-const Usb = struct {
+pub const Usb = struct {
     pid: []u8,
 };
 
-const Bootmagic = struct {
+pub const Bootmagic = struct {
     matrix: []u8,
 };
 
-const Features = struct {
+pub const Features = struct {
     mousekey: bool,
     bootmagic: bool,
     extrakey: bool,

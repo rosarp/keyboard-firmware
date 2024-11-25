@@ -31,7 +31,11 @@ pub fn build(b: *std.Build) !void {
 
     // Add the config as a build option
     const options = b.addOptions();
-    options.addOption(KeyboardConfig, "keyboard_config", config);
+    options.addOption(
+        KeyboardConfig,
+        "keyboard_config",
+        config,
+    );
     firmware.add_options("build_options", options);
 
     // firmware.addImport("config", options.createModule());
@@ -71,11 +75,14 @@ pub fn build(b: *std.Build) !void {
 }
 
 fn loadConfig() !KeyboardConfig {
-    const parsed = try KeyboardConfig.init();
-    // defer parsed.deinit();
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+    const parsed = try KeyboardConfig.init(allocator);
+    defer parsed.deinit();
     const config = parsed.value;
     info("config.root: {s}\n", .{config.layers});
     const gpio_pins = generatePins(40);
-    info("config.root: {s}\n", .{gpio_pins});
+    info("config.root: {d}\n", .{gpio_pins});
     return config;
 }
