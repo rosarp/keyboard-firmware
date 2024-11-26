@@ -3,6 +3,8 @@ const json = std.json;
 const microzig = @import("microzig");
 
 const KeyboardConfig = @import("src/config.zig").KeyboardConfig;
+const Gpio = @import("src/config.zig").Gpio;
+const number_of_pins = @import("src/config.zig").number_of_pins;
 const loadConfig = @import("src/config.zig").loadConfig;
 const MicroBuild = microzig.MicroBuild(.{
     .rp2xxx = true,
@@ -11,12 +13,8 @@ const MicroBuild = microzig.MicroBuild(.{
 pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
-    var gpio_pins: [40]u8 = undefined;
-    const config = try loadConfig(allocator, &gpio_pins);
+    const allocator = b.allocator;
+    const config = try loadConfig(allocator);
     const mz_dep = b.dependency("microzig", .{});
 
     const mb = MicroBuild.init(b, mz_dep) orelse return;
@@ -38,14 +36,14 @@ pub fn build(b: *std.Build) !void {
     options.addOption(
         KeyboardConfig,
         "keyboard_config",
-        config,
+        config.keyboard_config,
     );
-    std.log.debug("gpio_pins: {d}\n", .{gpio_pins});
+    std.log.debug("gpio_pins: {d}\n", .{config.gpio_pins});
 
     options.addOption(
-        []const u8,
+        [number_of_pins]u8,
         "gpio_pins",
-        &gpio_pins,
+        config.gpio_pins,
     );
     firmware.add_options("build_options", options);
 

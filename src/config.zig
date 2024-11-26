@@ -36,6 +36,12 @@ pub const Features = struct {
     rgb_matrix: bool,
 };
 
+pub const Gpio = struct {
+    pins: [number_of_pins]u8,
+};
+
+pub const number_of_pins = 40;
+
 /// Runs at build time
 fn init(allocator: std.mem.Allocator) !json.Parsed(KeyboardConfig) {
     const config_file: []const u8 = @embedFile("keyboard.json");
@@ -46,18 +52,24 @@ fn init(allocator: std.mem.Allocator) !json.Parsed(KeyboardConfig) {
 }
 
 /// Runs at build time
-pub fn loadConfig(allocator: std.mem.Allocator, gpio_pins: []u8) !KeyboardConfig {
+pub fn loadConfig(allocator: std.mem.Allocator) !struct {
+    keyboard_config: KeyboardConfig,
+    gpio_pins: [number_of_pins]u8,
+} {
     const parsed = try init(allocator);
-    defer parsed.deinit();
     const config = parsed.value;
 
     const json_config = try json.stringifyAlloc(allocator, config, .{});
     defer allocator.free(json_config);
     debug("config: {s}\n", .{json_config});
 
-    for (0..gpio_pins.len) |i| {
-        gpio_pins[i] = @intCast(i);
+    var pins: [number_of_pins]u8 = undefined;
+    for (0..pins.len) |i| {
+        pins[i] = @intCast(i);
     }
-    debug("gpio_pins: {d}\n", .{gpio_pins});
-    return config;
+    debug("gpio_pins: {d}\n", .{pins});
+    return .{
+        .keyboard_config = config,
+        .gpio_pins = pins,
+    };
 }
