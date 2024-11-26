@@ -1,10 +1,9 @@
 const std = @import("std");
-const info = std.log.info;
 const json = std.json;
 const microzig = @import("microzig");
 
 const KeyboardConfig = @import("src/config.zig").KeyboardConfig;
-const generatePins = @import("src/gpio.zig").generatePins;
+const loadConfig = @import("src/config.zig").loadConfig;
 const MicroBuild = microzig.MicroBuild(.{
     .rp2xxx = true,
 });
@@ -12,7 +11,8 @@ const MicroBuild = microzig.MicroBuild(.{
 pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
-    const config = try loadConfig();
+    var gpio_pins: [40]u8 = undefined;
+    const config = try loadConfig(&gpio_pins);
     const mz_dep = b.dependency("microzig", .{});
 
     const mb = MicroBuild.init(b, mz_dep) orelse return;
@@ -35,6 +35,13 @@ pub fn build(b: *std.Build) !void {
         KeyboardConfig,
         "keyboard_config",
         config,
+    );
+    std.log.debug("gpio_pins: {d}\n", .{gpio_pins});
+
+    options.addOption(
+        []const u8,
+        "gpio_pins",
+        &gpio_pins,
     );
     firmware.add_options("build_options", options);
 
@@ -72,17 +79,4 @@ pub fn build(b: *std.Build) !void {
     // const test_step = b.step("test", "Run unit tests");
     // test_step.dependOn(&run_lib_unit_tests.step);
     // test_step.dependOn(&run_exe_unit_tests.step);
-}
-
-fn loadConfig() !KeyboardConfig {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-    const parsed = try KeyboardConfig.init(allocator);
-    defer parsed.deinit();
-    const config = parsed.value;
-    info("config.root: {s}\n", .{config.layers});
-    const gpio_pins = generatePins(40);
-    info("config.root: {d}\n", .{gpio_pins});
-    return config;
 }

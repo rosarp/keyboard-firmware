@@ -1,13 +1,12 @@
 const std = @import("std");
 const info = std.log.info;
-const keyboard_config = @import("keyboard_config");
-// const generatePins = @import("gpio.zig").generatePins;
+const keyboard_config = @import("build_options").keyboard_config;
+const gpio_pins = @import("build_options").gpio_pins;
 
 // comptime load left or right gpio pins
 
 pub fn main() !void {
-    // _ = comptime generatePins(40);
-    // info("gpio.pings: {s}\n", .{gpio_pins});
+    info("gpio.pings: {s}\n", .{gpio_pins});
 
     info("config.root: {}\n", .{keyboard_config.layers.len});
 }
