@@ -11,8 +11,12 @@ const MicroBuild = microzig.MicroBuild(.{
 pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
     var gpio_pins: [40]u8 = undefined;
-    const config = try loadConfig(&gpio_pins);
+    const config = try loadConfig(allocator, &gpio_pins);
     const mz_dep = b.dependency("microzig", .{});
 
     const mb = MicroBuild.init(b, mz_dep) orelse return;

@@ -46,11 +46,7 @@ fn init(allocator: std.mem.Allocator) !json.Parsed(KeyboardConfig) {
 }
 
 /// Runs at build time
-pub fn loadConfig(gpio_pins: []u8) !KeyboardConfig {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
+pub fn loadConfig(allocator: std.mem.Allocator, gpio_pins: []u8) !KeyboardConfig {
     const parsed = try init(allocator);
     defer parsed.deinit();
     const config = parsed.value;
