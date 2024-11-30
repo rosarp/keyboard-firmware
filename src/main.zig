@@ -1,15 +1,14 @@
 const std = @import("std");
 const info = std.log.info;
-const keyboard_config = @import("build_options").keyboard_config;
-const gpio_pins = @import("build_options").gpio_pins;
+
+const microzig = @import("microzig");
+const gpio = microzig.hal;
+
+// const keyboard_config = @import("build_options").keyboard_config;
 
 // comptime load left or right gpio pins
 
-pub fn main() !void {
-    info("gpio.pings: {s}\n", .{gpio_pins});
-
-    info("config.root: {}\n", .{keyboard_config.layers.len});
-}
+pub fn main() !void {}
 
 test "simple test" {
     var list = std.ArrayList(i32).init(std.testing.allocator);

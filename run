@@ -3,13 +3,18 @@
 def main [] {}
 
 # with debug symbols
-def "main debug" [] {
-	zig build
+def "main debug-left" [] {
+	zig build -Dunit=left
+}
+
+# with debug symbols
+def "main debug-right" [] {
+	zig build -Dunit=right
 }
 
 # with debug symbols
 def "main debug-ref" [] {
-	zig build -freference-trace
+	zig build -Dunit=left -freference-trace
 }
 
 # clean cache
@@ -25,32 +30,41 @@ def "main clean" [] {
 	}
 }
 
-# default 
-def "main build" [] {
-	main build-safe
+# build left unit firmware 
+def "main build-left" [] {
+	main build-safe "-Dunit=left"
+}
+
+# build right unit firmware
+def "main build-right" [] {
+	main build-safe "-Dunit=right"
 }
 
 # with all safety ON
-def "main build-safe" [] {
-	zig build -Doptimize=ReleaseSafe
+def "main build-safe" [param?: string] {
+	zig build -Doptimize=ReleaseSafe $param
 }
 
 # with safety off + size optimized
-def "main build-small" [] {
-	zig build -Doptimize=ReleaseSmall
+def "main build-small" [param?: string] {
+	zig build -Doptimize=ReleaseSmall $param
 }
 
 # with safety off + performance optimized
-def "main build-fast" [] {
-	zig build -Doptimize=ReleaseFast
+def "main build-fast" [param?: string] {
+	zig build -Doptimize=ReleaseFast $param
 }
 
+# generate zig file from keycodes header file from QMK repo
+def "main gen-keycodes" [] {
+	rm ./src/keycodes.zig
+	zig translate-c ./keycodes.h --verbose-cimport | save ./src/keycodes.zig
+}
+
+# does not work as of current microzig version
 def "main zig-fetch" [] {
 	# 0.13.0
 	# zig fetch --save="microzig" https://github.com/ZigEmbeddedGroup/microzig/archive/26767e8227ae80fc1a39245815f396d8270c84ca.tar.gz
 	# zig fetch --save="microzig/build" https://github.com/ZigEmbeddedGroup/microzig/archive/26767e8227ae80fc1a39245815f396d8270c84ca.tar.gz
 	# zig fetch --save="microzig/bsp/raspberrypi/rp2040" https://github.com/ZigEmbeddedGroup/microzig/archive/26767e8227ae80fc1a39245815f396d8270c84ca.tar.gz
-	# 0.12.1
-	# zig fetch --save="microzig/build" https://downloads.microzig.tech/microzig-0.12.1/build-0.0.1.tar.gz
-	# zig fetch --save="microzig/bsp/raspberrypi/rp2040" https://downloads.microzig.tech/microzig-0.12.1/bsp/raspberrypi/rp2040-0.0.0.tar.gz
 }

@@ -1,11 +1,12 @@
 const std = @import("std");
+const AutoArrayHashMap = std.AutoArrayHashMap;
 const json = std.json;
 const microzig = @import("microzig");
 
-const KeyboardConfig = @import("src/config.zig").KeyboardConfig;
-const Gpio = @import("src/config.zig").Gpio;
+const GpioKeycodeMap = @import("src/config.zig").GpioKeycodeMap;
+const createConfig = @import("src/config.zig").createConfig;
+const number_of_layers = @import("src/config.zig").number_of_layers;
 const number_of_pins = @import("src/config.zig").number_of_pins;
-const loadConfig = @import("src/config.zig").loadConfig;
 const MicroBuild = microzig.MicroBuild(.{
     .rp2xxx = true,
 });
@@ -14,7 +15,13 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
     const allocator = b.allocator;
-    const config = try loadConfig(allocator);
+    const unit_opt = b.option([]const u8, "unit", "Unit type: left or right");
+    var unit: []const u8 = "left";
+    if (unit_opt != null and unit_opt.?.len != 0) {
+        unit = unit_opt.?[0..];
+    }
+
+    const gpio_keycode_map: GpioKeycodeMap = try createConfig(allocator, unit);
     const mz_dep = b.dependency("microzig", .{});
 
     const mb = MicroBuild.init(b, mz_dep) orelse return;
@@ -34,17 +41,11 @@ pub fn build(b: *std.Build) !void {
     // Add the config as a build option
     const options = b.addOptions();
     options.addOption(
-        KeyboardConfig,
-        "keyboard_config",
-        config.keyboard_config,
+        GpioKeycodeMap,
+        "gpio_keycode_map",
+        gpio_keycode_map,
     );
-    std.log.debug("gpio_pins: {d}\n", .{config.gpio_pins});
 
-    options.addOption(
-        [number_of_pins]u8,
-        "gpio_pins",
-        config.gpio_pins,
-    );
     firmware.add_options("build_options", options);
 
     // firmware.addImport("config", options.createModule());
