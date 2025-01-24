@@ -18,6 +18,7 @@ keyboard-firmware/
 │   ├── main.zig        # Main firmware entry point
 │   ├── config.zig      # Configuration handling
 │   └── keyboard.json   # QMK-compatible Keyboard layout and settings
+│   └── keycodes.zig    # QMK-compatible keycodes.h converted to zig
 └── build.zig          # Build system configuration
 └── build.zig.zon      # Build manager
 ```
@@ -30,10 +31,12 @@ keyboard-firmware/
 
 ## Building
 
-To build the firmware:
+As this firmware is for split keyboard, firmware is built separately!
+To build the firmware for left & right side individually:
 
 ```bash
-zig build
+zig build-left
+zig build-right
 ```
 
 The compiled firmware will be available in the `zig-out/firmware` directory.

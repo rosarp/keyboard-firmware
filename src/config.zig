@@ -5,6 +5,7 @@ const json = std.json;
 const getKeycodeDefines = @import("keycodes.zig").getKeycodeDefines;
 
 /// bootmagic.matrix, community_layouts & layers need to be marked with fixed length according to keyboard.json data
+/// Thus when config values are changed, KeyboardConfig needs to be updated
 /// TODO: check if it can be dynamic
 pub const KeyboardConfig = struct {
     keyboard_name: []const u8,
