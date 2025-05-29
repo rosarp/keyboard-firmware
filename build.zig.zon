@@ -1,11 +1,12 @@
 .{
-    .name = "keyboard_firmware",
+    .name = .keyboard_firmware,
     .version = "0.0.1",
-    .minimum_zig_version = "0.13.0",
-    .maximum_zig_version = "0.13.0",
+    .fingerprint = 0xa8168241eda84b60, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.14.1",
     .dependencies = .{
         .microzig = .{
-            .path = "lib/microzig",
+            .url = "https://github.com/ZigEmbeddedGroup/microzig/releases/download/0.14.1/microzig.tar.gz",
+            .hash = "microzig-0.14.1-D20YSWs2CAC8_NXi4HglJctgh00Fst0GQFl3s1TQKbx-",
         },
     },
 
