@@ -40,11 +40,11 @@ pub const Features = struct {
 };
 
 pub const GpioConfig = struct {
-    pins: [number_of_pins]u8,
+    pins: []const u8,
 };
 
 pub const number_of_layers = 4;
-pub const number_of_pins = 21;
+pub const number_of_pins = 22;
 
 pub const GpioKeycodeMap = struct {
     pins: [number_of_pins]u8,
@@ -77,10 +77,6 @@ pub fn loadConfig(allocator: std.mem.Allocator) !struct {
     const parsed_gpio_config = try initConfig(GpioConfig, "./board_configs/waveshare-rp2040-pizero.json", allocator);
     const gpio_config = parsed_gpio_config.value;
 
-    const json_config = try json.stringifyAlloc(allocator, keyboard_config, .{});
-    defer allocator.free(json_config);
-    debug("config: {s}\n", .{json_config});
-
     return .{
         .keyboard_config = keyboard_config,
         .gpio_config = gpio_config,
@@ -100,6 +96,7 @@ pub fn createConfig(allocator: std.mem.Allocator, unit: []const u8) !GpioKeycode
     for (keyboard_config.layers, 0..) |layer, layer_index| {
         var pin_index: usize = 0;
         for (marker..marker + number_of_pins) |keycode_idx| {
+            if (pin_index >= pins.len) break;
             const keycode = getKeycodeDefines(layer[keycode_idx]);
             const pin = pins[pin_index];
             debug("pin: {d}, {s}: {d}", .{ pin, layer[keycode_idx], keycode });

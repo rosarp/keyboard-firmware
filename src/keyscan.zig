@@ -24,7 +24,7 @@ pub const KeyboardOptions = struct {
 /// There are no row or columns. Keys are directly mapped to individual GPIo pin.
 /// Will use key as matrix readers (inputs).
 pub fn Keypad(comptime options: KeyboardOptions) type {
-    if (options.keys > 256)
+    if (options.key_count > 256)
         @compileError("cannot encode more than 256 keys!");
     return struct {
         const Matrix = @This();
@@ -106,6 +106,6 @@ inline fn busyloop(comptime N: comptime_int) void {
     for (0..N) |_| {
         // wait some cycles so the physics does its magic and convey
         // the electrons
-        asm volatile ("" ::: "memory");
+        asm volatile ("" ::: .{ .memory = true });
     }
 }

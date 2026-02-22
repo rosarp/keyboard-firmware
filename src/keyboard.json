@@ -68,7 +68,9 @@
       "KC_SPC",
       "KC_ENT",
       "MO(2)",
-      "KC_RALT"
+      "KC_RALT",
+      "KC_NO",
+      "KC_NO"
     ],
     [
       "KC_ESC",
@@ -112,7 +114,9 @@
       "KC_SPC",
       "KC_ENT",
       "MO(3)",
-      "KC_RALT"
+      "KC_RALT",
+      "KC_NO",
+      "KC_NO"
     ],
     [
       "KC_ESC",
@@ -156,7 +160,9 @@
       "KC_SPC",
       "KC_ENT",
       "KC_TRNS",
-      "KC_RALT"
+      "KC_RALT",
+      "KC_NO",
+      "KC_NO"
     ],
     [
       "KC_F1",
@@ -200,7 +206,9 @@
       "KC_SPC",
       "KC_ENT",
       "KC_TRNS",
-      "KC_RALT"
+      "KC_RALT",
+      "KC_NO",
+      "KC_NO"
     ]
   ],
   "author": ""
