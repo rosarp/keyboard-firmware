@@ -54,7 +54,6 @@ pub const __builtin_assume = @import("std").zig.c_builtins.__builtin_assume;
 pub const __builtin_unreachable = @import("std").zig.c_builtins.__builtin_unreachable;
 pub const __builtin_constant_p = @import("std").zig.c_builtins.__builtin_constant_p;
 pub const __builtin_mul_overflow = @import("std").zig.c_builtins.__builtin_mul_overflow;
-
 const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "QK_BASIC", 0 },
     .{ "QK_BASIC_MAX", 255 },
@@ -104,6 +103,8 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "QK_MACRO_MAX", 30591 },
     .{ "QK_CONNECTION", 30592 },
     .{ "QK_CONNECTION_MAX", 30655 },
+    .{ "QK_COMMUNITY_MODULE", 30656 },
+    .{ "QK_COMMUNITY_MODULE_MAX", 30719 },
     .{ "QK_LIGHTING", 30720 },
     .{ "QK_LIGHTING_MAX", 30975 },
     .{ "QK_QUANTUM", 31744 },
@@ -679,6 +680,8 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "QK_LED_MATRIX_BRIGHTNESS_DOWN", 30742 },
     .{ "QK_LED_MATRIX_SPEED_UP", 30743 },
     .{ "QK_LED_MATRIX_SPEED_DOWN", 30744 },
+    .{ "QK_LED_MATRIX_FLAG_NEXT", 30745 },
+    .{ "QK_LED_MATRIX_FLAG_PREVIOUS", 30746 },
     .{ "QK_UNDERGLOW_TOGGLE", 30752 },
     .{ "QK_UNDERGLOW_MODE_NEXT", 30753 },
     .{ "QK_UNDERGLOW_MODE_PREVIOUS", 30754 },
@@ -713,6 +716,8 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "QK_RGB_MATRIX_VALUE_DOWN", 30794 },
     .{ "QK_RGB_MATRIX_SPEED_UP", 30795 },
     .{ "QK_RGB_MATRIX_SPEED_DOWN", 30796 },
+    .{ "QK_RGB_MATRIX_FLAG_NEXT", 30797 },
+    .{ "QK_RGB_MATRIX_FLAG_PREVIOUS", 30798 },
     .{ "QK_BOOTLOADER", 31744 },
     .{ "QK_REBOOT", 31745 },
     .{ "QK_DEBUG_TOGGLE", 31746 },
@@ -1366,6 +1371,8 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "LM_BRID", 30742 },
     .{ "LM_SPDU", 30743 },
     .{ "LM_SPDD", 30744 },
+    .{ "LM_FLGN", 30745 },
+    .{ "LM_FLGP", 30746 },
     .{ "UG_TOGG", 30752 },
     .{ "UG_NEXT", 30753 },
     .{ "UG_PREV", 30754 },
@@ -1400,6 +1407,8 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "RM_VALD", 30794 },
     .{ "RM_SPDU", 30795 },
     .{ "RM_SPDD", 30796 },
+    .{ "RM_FLGN", 30797 },
+    .{ "RM_FLGP", 30798 },
     .{ "QK_BOOT", 31744 },
     .{ "QK_RBT", 31745 },
     .{ "DB_TOGG", 31746 },
@@ -1493,7 +1502,6 @@ const KeycodeDefines = @import("std").StaticStringMap(i32).initComptime(.{
     .{ "KC_LABK", 54 }, // <
     .{ "KC_RABK", 55 }, // >
     .{ "KC_QUES", 56 }, // ?
-
     .{ "KC_TILDE", 53 },
     .{ "KC_EXCLAIM", 30 },
     .{ "KC_DOLLAR", 33 },
@@ -1537,10 +1545,10 @@ pub const enum_qk_keycode_ranges = c_uint;
 pub const enum_qk_keycode_defines = c_uint;
 pub const __llvm__ = @as(c_int, 1);
 pub const __clang__ = @as(c_int, 1);
-pub const __clang_major__ = @as(c_int, 19);
+pub const __clang_major__ = @as(c_int, 20);
 pub const __clang_minor__ = @as(c_int, 1);
-pub const __clang_patchlevel__ = @as(c_int, 0);
-pub const __clang_version__ = "19.1.0 (https://github.com/ziglang/zig-bootstrap 46b9e66db90230fe62404b27b85a378ccf2c82c2)";
+pub const __clang_patchlevel__ = @as(c_int, 2);
+pub const __clang_version__ = "20.1.2 (https://github.com/ziglang/zig-bootstrap 7ef74e656cf8ddbd6bf891a8475892aa1afa6891)";
 pub const __GNUC__ = @as(c_int, 4);
 pub const __GNUC_MINOR__ = @as(c_int, 2);
 pub const __GNUC_PATCHLEVEL__ = @as(c_int, 1);
@@ -1572,7 +1580,7 @@ pub const __FPCLASS_POSSUBNORMAL = @as(c_int, 0x0080);
 pub const __FPCLASS_POSNORMAL = @as(c_int, 0x0100);
 pub const __FPCLASS_POSINF = @as(c_int, 0x0200);
 pub const __PRAGMA_REDEFINE_EXTNAME = @as(c_int, 1);
-pub const __VERSION__ = "Clang 19.1.0 (https://github.com/ziglang/zig-bootstrap 46b9e66db90230fe62404b27b85a378ccf2c82c2)";
+pub const __VERSION__ = "Clang 20.1.2 (https://github.com/ziglang/zig-bootstrap 7ef74e656cf8ddbd6bf891a8475892aa1afa6891)";
 pub const __OBJC_BOOL_IS_BOOL = @as(c_int, 0);
 pub const __CONSTANT_CFSTRINGS__ = @as(c_int, 1);
 pub const __clang_literal_encoding__ = "UTF-8";
@@ -1585,7 +1593,7 @@ pub const __LITTLE_ENDIAN__ = @as(c_int, 1);
 pub const _LP64 = @as(c_int, 1);
 pub const __LP64__ = @as(c_int, 1);
 pub const __CHAR_BIT__ = @as(c_int, 8);
-pub const __BOOL_WIDTH__ = @as(c_int, 8);
+pub const __BOOL_WIDTH__ = @as(c_int, 1);
 pub const __SHRT_WIDTH__ = @as(c_int, 16);
 pub const __INT_WIDTH__ = @as(c_int, 32);
 pub const __LONG_WIDTH__ = @as(c_int, 64);
@@ -1630,13 +1638,15 @@ pub const __INTMAX_FMTd__ = "ld";
 pub const __INTMAX_FMTi__ = "li";
 pub const __INTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `L`");
 // (no file):95:9
+pub const __INTMAX_C = @import("std").zig.c_translation.Macros.L_SUFFIX;
 pub const __UINTMAX_TYPE__ = c_ulong;
 pub const __UINTMAX_FMTo__ = "lo";
 pub const __UINTMAX_FMTu__ = "lu";
 pub const __UINTMAX_FMTx__ = "lx";
 pub const __UINTMAX_FMTX__ = "lX";
 pub const __UINTMAX_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `UL`");
-// (no file):101:9
+// (no file):102:9
+pub const __UINTMAX_C = @import("std").zig.c_translation.Macros.UL_SUFFIX;
 pub const __PTRDIFF_TYPE__ = c_long;
 pub const __PTRDIFF_FMTd__ = "ld";
 pub const __PTRDIFF_FMTi__ = "li";
@@ -1726,25 +1736,42 @@ pub const __INT8_TYPE__ = i8;
 pub const __INT8_FMTd__ = "hhd";
 pub const __INT8_FMTi__ = "hhi";
 pub const __INT8_C_SUFFIX__ = "";
+pub inline fn __INT8_C(c: anytype) @TypeOf(c) {
+    _ = &c;
+    return c;
+}
 pub const __INT16_TYPE__ = c_short;
 pub const __INT16_FMTd__ = "hd";
 pub const __INT16_FMTi__ = "hi";
 pub const __INT16_C_SUFFIX__ = "";
+pub inline fn __INT16_C(c: anytype) @TypeOf(c) {
+    _ = &c;
+    return c;
+}
 pub const __INT32_TYPE__ = c_int;
 pub const __INT32_FMTd__ = "d";
 pub const __INT32_FMTi__ = "i";
 pub const __INT32_C_SUFFIX__ = "";
+pub inline fn __INT32_C(c: anytype) @TypeOf(c) {
+    _ = &c;
+    return c;
+}
 pub const __INT64_TYPE__ = c_long;
 pub const __INT64_FMTd__ = "ld";
 pub const __INT64_FMTi__ = "li";
 pub const __INT64_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `L`");
-// (no file):202:9
+// (no file):207:9
+pub const __INT64_C = @import("std").zig.c_translation.Macros.L_SUFFIX;
 pub const __UINT8_TYPE__ = u8;
 pub const __UINT8_FMTo__ = "hho";
 pub const __UINT8_FMTu__ = "hhu";
 pub const __UINT8_FMTx__ = "hhx";
 pub const __UINT8_FMTX__ = "hhX";
 pub const __UINT8_C_SUFFIX__ = "";
+pub inline fn __UINT8_C(c: anytype) @TypeOf(c) {
+    _ = &c;
+    return c;
+}
 pub const __UINT8_MAX__ = @as(c_int, 255);
 pub const __INT8_MAX__ = @as(c_int, 127);
 pub const __UINT16_TYPE__ = c_ushort;
@@ -1753,6 +1780,10 @@ pub const __UINT16_FMTu__ = "hu";
 pub const __UINT16_FMTx__ = "hx";
 pub const __UINT16_FMTX__ = "hX";
 pub const __UINT16_C_SUFFIX__ = "";
+pub inline fn __UINT16_C(c: anytype) @TypeOf(c) {
+    _ = &c;
+    return c;
+}
 pub const __UINT16_MAX__ = @import("std").zig.c_translation.promoteIntLiteral(c_int, 65535, .decimal);
 pub const __INT16_MAX__ = @as(c_int, 32767);
 pub const __UINT32_TYPE__ = c_uint;
@@ -1761,7 +1792,8 @@ pub const __UINT32_FMTu__ = "u";
 pub const __UINT32_FMTx__ = "x";
 pub const __UINT32_FMTX__ = "X";
 pub const __UINT32_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `U`");
-// (no file):224:9
+// (no file):232:9
+pub const __UINT32_C = @import("std").zig.c_translation.Macros.U_SUFFIX;
 pub const __UINT32_MAX__ = @import("std").zig.c_translation.promoteIntLiteral(c_uint, 4294967295, .decimal);
 pub const __INT32_MAX__ = @import("std").zig.c_translation.promoteIntLiteral(c_int, 2147483647, .decimal);
 pub const __UINT64_TYPE__ = c_ulong;
@@ -1770,7 +1802,8 @@ pub const __UINT64_FMTu__ = "lu";
 pub const __UINT64_FMTx__ = "lx";
 pub const __UINT64_FMTX__ = "lX";
 pub const __UINT64_C_SUFFIX__ = @compileError("unable to translate macro: undefined identifier `UL`");
-// (no file):232:9
+// (no file):241:9
+pub const __UINT64_C = @import("std").zig.c_translation.Macros.UL_SUFFIX;
 pub const __UINT64_MAX__ = @import("std").zig.c_translation.promoteIntLiteral(c_ulong, 18446744073709551615, .decimal);
 pub const __INT64_MAX__ = @import("std").zig.c_translation.promoteIntLiteral(c_long, 9223372036854775807, .decimal);
 pub const __INT_LEAST8_TYPE__ = i8;
@@ -1900,12 +1933,12 @@ pub const __x86_64__ = @as(c_int, 1);
 pub const __SEG_GS = @as(c_int, 1);
 pub const __SEG_FS = @as(c_int, 1);
 pub const __seg_gs = @compileError("unable to translate macro: undefined identifier `address_space`");
-// (no file):363:9
+// (no file):373:9
 pub const __seg_fs = @compileError("unable to translate macro: undefined identifier `address_space`");
-// (no file):364:9
-pub const __k8 = @as(c_int, 1);
-pub const __k8__ = @as(c_int, 1);
-pub const __tune_k8__ = @as(c_int, 1);
+// (no file):374:9
+pub const __corei7 = @as(c_int, 1);
+pub const __corei7__ = @as(c_int, 1);
+pub const __tune_corei7__ = @as(c_int, 1);
 pub const __REGISTER_PREFIX__ = "";
 pub const __NO_MATH_INLINES = @as(c_int, 1);
 pub const __AES__ = @as(c_int, 1);
@@ -1936,6 +1969,8 @@ pub const __PKU__ = @as(c_int, 1);
 pub const __CLFLUSHOPT__ = @as(c_int, 1);
 pub const __CLWB__ = @as(c_int, 1);
 pub const __SHSTK__ = @as(c_int, 1);
+pub const __KL__ = @as(c_int, 1);
+pub const __WIDEKL__ = @as(c_int, 1);
 pub const __RDPID__ = @as(c_int, 1);
 pub const __WAITPKG__ = @as(c_int, 1);
 pub const __MOVDIRI__ = @as(c_int, 1);
@@ -1943,6 +1978,9 @@ pub const __MOVDIR64B__ = @as(c_int, 1);
 pub const __PCONFIG__ = @as(c_int, 1);
 pub const __PTWRITE__ = @as(c_int, 1);
 pub const __INVPCID__ = @as(c_int, 1);
+pub const __HRESET__ = @as(c_int, 1);
+pub const __AVXVNNI__ = @as(c_int, 1);
+pub const __SERIALIZE__ = @as(c_int, 1);
 pub const __CRC32__ = @as(c_int, 1);
 pub const __AVX2__ = @as(c_int, 1);
 pub const __AVX__ = @as(c_int, 1);
@@ -1977,8 +2015,12 @@ pub const __STDC_UTF_32__ = @as(c_int, 1);
 pub const __STDC_EMBED_NOT_FOUND__ = @as(c_int, 0);
 pub const __STDC_EMBED_FOUND__ = @as(c_int, 1);
 pub const __STDC_EMBED_EMPTY__ = @as(c_int, 2);
-pub const _DEBUG = @as(c_int, 1);
 pub const __GCC_HAVE_DWARF2_CFI_ASM = @as(c_int, 1);
+pub const QMK_KEYCODES_VERSION = "0.0.8";
+pub const QMK_KEYCODES_VERSION_BCD = @as(c_int, 0x00000008);
+pub const QMK_KEYCODES_VERSION_MAJOR = @as(c_int, 0);
+pub const QMK_KEYCODES_VERSION_MINOR = @as(c_int, 0);
+pub const QMK_KEYCODES_VERSION_PATCH = @as(c_int, 8);
 pub inline fn IS_QK_BASIC(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_BASIC")) and (code <= getKeycodeDefines("QK_BASIC_MAX"))) {
     _ = &code;
     return (code >= getKeycodeDefines("QK_BASIC")) and (code <= getKeycodeDefines("QK_BASIC_MAX"));
@@ -2074,6 +2116,10 @@ pub inline fn IS_QK_MACRO(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_
 pub inline fn IS_QK_CONNECTION(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_CONNECTION")) and (code <= getKeycodeDefines("QK_CONNECTION_MAX"))) {
     _ = &code;
     return (code >= getKeycodeDefines("QK_CONNECTION")) and (code <= getKeycodeDefines("QK_CONNECTION_MAX"));
+}
+pub inline fn IS_QK_COMMUNITY_MODULE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_COMMUNITY_MODULE")) and (code <= getKeycodeDefines("QK_COMMUNITY_MODULE_MAX"))) {
+    _ = &code;
+    return (code >= getKeycodeDefines("QK_COMMUNITY_MODULE")) and (code <= getKeycodeDefines("QK_COMMUNITY_MODULE_MAX"));
 }
 pub inline fn IS_QK_LIGHTING(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_LIGHTING")) and (code <= getKeycodeDefines("QK_LIGHTING_MAX"))) {
     _ = &code;
@@ -2171,9 +2217,9 @@ pub inline fn IS_BACKLIGHT_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDef
     _ = &code;
     return (code >= getKeycodeDefines("QK_BACKLIGHT_ON")) and (code <= getKeycodeDefines("QK_BACKLIGHT_TOGGLE_BREATHING"));
 }
-pub inline fn IS_LED_MATRIX_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_LED_MATRIX_ON")) and (code <= getKeycodeDefines("QK_LED_MATRIX_SPEED_DOWN"))) {
+pub inline fn IS_LED_MATRIX_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_LED_MATRIX_ON")) and (code <= getKeycodeDefines("QK_LED_MATRIX_FLAG_PREVIOUS"))) {
     _ = &code;
-    return (code >= getKeycodeDefines("QK_LED_MATRIX_ON")) and (code <= getKeycodeDefines("QK_LED_MATRIX_SPEED_DOWN"));
+    return (code >= getKeycodeDefines("QK_LED_MATRIX_ON")) and (code <= getKeycodeDefines("QK_LED_MATRIX_FLAG_PREVIOUS"));
 }
 pub inline fn IS_UNDERGLOW_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_UNDERGLOW_TOGGLE")) and (code <= getKeycodeDefines("QK_UNDERGLOW_SPEED_DOWN"))) {
     _ = &code;
@@ -2183,9 +2229,9 @@ pub inline fn IS_RGB_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("
     _ = &code;
     return (code >= getKeycodeDefines("RGB_MODE_PLAIN")) and (code <= getKeycodeDefines("RGB_MODE_TWINKLE"));
 }
-pub inline fn IS_RGB_MATRIX_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_RGB_MATRIX_ON")) and (code <= getKeycodeDefines("QK_RGB_MATRIX_SPEED_DOWN"))) {
+pub inline fn IS_RGB_MATRIX_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_RGB_MATRIX_ON")) and (code <= getKeycodeDefines("QK_RGB_MATRIX_FLAG_PREVIOUS"))) {
     _ = &code;
-    return (code >= getKeycodeDefines("QK_RGB_MATRIX_ON")) and (code <= getKeycodeDefines("QK_RGB_MATRIX_SPEED_DOWN"));
+    return (code >= getKeycodeDefines("QK_RGB_MATRIX_ON")) and (code <= getKeycodeDefines("QK_RGB_MATRIX_FLAG_PREVIOUS"));
 }
 pub inline fn IS_QUANTUM_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines("QK_BOOTLOADER")) and (code <= getKeycodeDefines("QK_LAYER_LOCK"))) {
     _ = &code;
@@ -2200,52 +2246,52 @@ pub inline fn IS_USER_KEYCODE(code: anytype) @TypeOf((code >= getKeycodeDefines(
     return (code >= getKeycodeDefines("QK_USER_0")) and (code <= getKeycodeDefines("QK_USER_31"));
 }
 pub const INTERNAL_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1514:9
-pub const BASIC_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1515:9
-pub const SYSTEM_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1516:9
-pub const CONSUMER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1517:9
-pub const MOUSE_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1518:9
-pub const MODIFIER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1519:9
-pub const SWAP_HANDS_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1520:9
-pub const MAGIC_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1521:9
-pub const MIDI_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1522:9
-pub const SEQUENCER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1523:9
-pub const JOYSTICK_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1524:9
-pub const PROGRAMMABLE_BUTTON_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1525:9
-pub const AUDIO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1526:9
-pub const STENO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1527:9
-pub const MACRO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1528:9
-pub const CONNECTION_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1529:9
-pub const BACKLIGHT_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1530:9
-pub const LED_MATRIX_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
-// ./keycodes.h:1531:9
-pub const UNDERGLOW_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1532:9
-pub const RGB_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+pub const BASIC_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1533:9
-pub const RGB_MATRIX_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+pub const SYSTEM_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1534:9
-pub const QUANTUM_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+pub const CONSUMER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1535:9
-pub const KB_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+pub const MOUSE_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1536:9
-pub const USER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+pub const MODIFIER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
 // ./keycodes.h:1537:9
+pub const SWAP_HANDS_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1538:9
+pub const MAGIC_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1539:9
+pub const MIDI_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1540:9
+pub const SEQUENCER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1541:9
+pub const JOYSTICK_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1542:9
+pub const PROGRAMMABLE_BUTTON_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1543:9
+pub const AUDIO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1544:9
+pub const STENO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1545:9
+pub const MACRO_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1546:9
+pub const CONNECTION_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1547:9
+pub const BACKLIGHT_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1548:9
+pub const LED_MATRIX_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1549:9
+pub const UNDERGLOW_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1550:9
+pub const RGB_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1551:9
+pub const RGB_MATRIX_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1552:9
+pub const QUANTUM_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1553:9
+pub const KB_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1554:9
+pub const USER_KEYCODE_RANGE = @compileError("unable to translate C expr: unexpected token '...'");
+// ./keycodes.h:1555:9
 pub const qk_keycode_ranges = enum_qk_keycode_ranges;
 pub const qk_keycode_defines = enum_qk_keycode_defines;

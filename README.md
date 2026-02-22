@@ -25,7 +25,7 @@ keyboard-firmware/
 
 ## Prerequisites
 
-- Zig 0.13.0 (It has dependency on microzig support for zig version)
+- Zig 0.15.1 (It has dependency on microzig support for zig version)
 - [microzig](https://github.com/ZigEmbeddedGroup/microzig)
 - A supported microcontroller (RP2040)
 

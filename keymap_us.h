@@ -1,6 +1,5 @@
-// https://github.com/qmk/qmk_firmware/blob/b02abcb9a63cc64d050f5d714ab6f2c0a4e278e6/quantum/keymap_extras/keymap_us.h
-// Jan 4, 2024
-// Copyright 2024 QMK
+// https://github.com/qmk/qmk_firmware/blob/99b5b9ab7ff80abd7cdfe890644ead0b7880b57f/quantum/keymap_extras/keymap_us.h
+// Copyright 2026 QMK
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 /*******************************************************************************
@@ -28,6 +27,12 @@
 #pragma once
 #include "keycodes.h"
 // clang-format off
+
+#define QMK_US_KEYCODES_VERSION "0.0.1"
+#define QMK_US_KEYCODES_VERSION_BCD 0x00000001
+#define QMK_US_KEYCODES_VERSION_MAJOR 0
+#define QMK_US_KEYCODES_VERSION_MINOR 0
+#define QMK_US_KEYCODES_VERSION_PATCH 1
 
 // Aliases
 #define KC_TILD S(KC_GRAVE) // ~

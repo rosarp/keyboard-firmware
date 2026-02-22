@@ -36,6 +36,11 @@ pub fn build(b: *std.Build) !void {
             "gpio_keycode_map",
             gpio_keycode_map,
         );
+        options.addOption(
+            []const u8,
+            "keyboard_unit",
+            unit,
+        );
 
         firmware.add_options("build_options", options);
 
