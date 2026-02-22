@@ -6,8 +6,10 @@ const time = rp_hal.time;
 
 const gpio_keycode_map = @import("build_options").gpio_keycode_map;
 const config = @import("config.zig");
+const UsbHid = @import("usb_hid.zig").UsbHid;
 
 const led = gpio.num(25);
+var usb_hid: UsbHid = undefined;
 
 var active_layer: u8 = 0;
 var last_state: [config.number_of_pins]bool = [_]bool{false} ** config.number_of_pins;
@@ -27,7 +29,7 @@ pub fn main() !void {
     }
 
     // Initialize USB
-    // try initUsb();
+    usb_hid = try UsbHid.init();
 
     var last_scan_time: u64 = time.get_time_since_boot().to_us();
 
@@ -42,7 +44,7 @@ pub fn main() !void {
         }
 
         // Process USB events
-        // usb_dev.task(false) catch unreachable;
+        usb_hid.task();
 
         // Toggle LED every 500ms
         if (current_time % 500000 < 5000) {
@@ -129,7 +131,7 @@ fn sendHidReport(keycode: i32, pressed: bool) void {
     }
 
     // Send report via USB HID
-    // driver_hid.sendReport(&report) catch {};
+    usb_hid.sendReport(&report) catch {};
 }
 
 pub fn panic(message: []const u8, _: ?*std.builtin.StackTrace, _: ?usize) noreturn {
